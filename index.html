@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GYM POPÓ MÃO DE PEDRA - Plataforma</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      color: #ff3c3c;
+    }
+    form {
+      background: #1e1e1e;
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 0.5rem;
+    }
+    button {
+      background-color: #ff3c3c;
+      border: none;
+      color: white;
+      padding: 0.8rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #e62828;
+    }
+  </style>
+</head>
+<body>
+  <h1>GYM POPÓ MÃO DE PEDRA</h1>
+  <form id="formCadastro">
+    <h2>Cadastro</h2>
+    <input type="text" name="nome" placeholder="Nome completo" required />
+    <input type="email" name="email" placeholder="E-mail" required />
+    <input type="text" name="telefone" placeholder="Telefone" required />
+    <input type="text" name="cpf" placeholder="CPF" required />
+    <button type="submit">Cadastrar</button>
+  </form>
+
+  <form id="formAgendamento">
+    <h2>Agendamento</h2>
+    <input type="text" name="nome" placeholder="Seu nome" required />
+    <select name="horario" required>
+      <option value="">Escolha um horário</option>
+      <option>08:00 - 09:00</option>
+      <option>10:00 - 11:00</option>
+      <option>14:00 - 15:00</option>
+      <option>18:00 - 19:00</option>
+    </select>
+    <button type="submit">Agendar</button>
+  </form>
+
+  <form id="formContato">
+    <h2>Fale com o professor</h2>
+    <input type="text" name="nome" placeholder="Seu nome" required />
+    <input type="email" name="email" placeholder="Seu e-mail" required />
+    <textarea name="mensagem" placeholder="Sua mensagem" required></textarea>
+    <button type="submit">Enviar mensagem</button>
+  </form>
+
+  <script>
+    const endpoint = "https://script.google.com/macros/s/AKfycbyNtkXEfuhSiiFdzUuxKMe0A7WEjEd9TsqHiUt96fFnIF9S6Tp7yGTnL_-g4D8BhXRJrg/exec";
+
+    function enviarDados(tipo, dados) {
+      fetch(endpoint, {
+        method: "POST",
+        body: JSON.stringify({ tipo, ...dados })
+      })
+      .then(r => r.text())
+      .then(alert)
+      .catch(e => alert("Erro ao enviar: " + e.message));
+    }
+
+    document.getElementById("formCadastro").addEventListener("submit", e => {
+      e.preventDefault();
+      const f = e.target;
+      const token = Math.random().toString(36).substr(2, 8);
+      enviarDados("cadastro", {
+        nome: f.nome.value,
+        email: f.email.value,
+        telefone: f.telefone.value,
+        cpf: f.cpf.value,
+        token
+      });
+      f.reset();
+    });
+
+    document.getElementById("formAgendamento").addEventListener("submit", e => {
+      e.preventDefault();
+      const f = e.target;
+      enviarDados("agendamento", {
+        nome: f.nome.value,
+        horario: f.horario.value
+      });
+      f.reset();
+    });
+
+    document.getElementById("formContato").addEventListener("submit", e => {
+      e.preventDefault();
+      const f = e.target;
+      enviarDados("contato", {
+        nome: f.nome.value,
+        email: f.email.value,
+        mensagem: f.mensagem.value
+      });
+      f.reset();
+    });
+  </script>
+</body>
+</html>
